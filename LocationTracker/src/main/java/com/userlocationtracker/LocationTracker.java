@@ -49,11 +49,10 @@ import java.util.Date;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         if(UsersReference == null)
-        {
-            FirebaseDatabase.getInstance().setPersistenceEnabled(true);
             UsersReference = FirebaseDatabase.getInstance().getReference("Users");
-        }
+
         if (isGooglePlayServicesAvailable())
             startTracker(initLocationTracker(new User()));
     }
@@ -68,7 +67,7 @@ import java.util.Date;
         if (saveUser(USER)!=null);
         {
             addUser();
-            Log.e(TAG,"stopTracker"+startService(new Intent(this, LocationUpdateService.class)));
+            Log.e(TAG,"stopTrackerok"+startService(new Intent(this, LocationUpdateService.class)));
             //startService(new Intent(this, LocationUpdateService.class));
         }
     }
