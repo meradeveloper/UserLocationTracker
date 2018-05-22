@@ -11,8 +11,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.gson.Gson;
 
-import org.greenrobot.eventbus.EventBus;
-
 import static android.content.Context.MODE_PRIVATE;
 import static com.userlocationtracker.LocationTracker.USEROBJECT;
 

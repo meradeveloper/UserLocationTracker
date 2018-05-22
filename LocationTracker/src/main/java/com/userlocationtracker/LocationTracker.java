@@ -31,11 +31,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.gson.Gson;
-
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
-
 import java.text.DateFormat;
 import java.util.Date;
 
@@ -54,7 +49,6 @@ import java.util.Date;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        AppConfig.getEventBus().register(this);
         FirebaseDatabase.getInstance().setPersistenceEnabled(true);
         UsersReference = FirebaseDatabase.getInstance().getReference("Users");
 
@@ -74,6 +68,11 @@ import java.util.Date;
             addUser();
             startService(new Intent(this, LocationUpdateService.class));
         }
+    }
+
+    public void stopTracker()
+    {
+        stopService(new Intent(this, LocationUpdateService.class));
     }
 
     private User saveUser(User USER)

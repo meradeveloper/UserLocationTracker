@@ -22,19 +22,10 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultTransform;
 import com.google.android.gms.common.api.Status;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-
-import org.greenrobot.eventbus.EventBus;
 
 import java.text.DateFormat;
 import java.util.Date;
@@ -45,21 +36,11 @@ public class LocationUpdateService extends Service implements LocationListener, 
     private static final String TAG = "LocationUpdateService";
     private static final long INTERVAL = 1000 * 5;
     private static final long FASTEST_INTERVAL = 1000 * 2;
-    private FusedLocationProviderClient mFusedLocationClient;
-    TextView tvLocation;
     LocationRequest mLocationRequest;
     GoogleApiClient mGoogleApiClient;
     Location mCurrentLocation;
-    private LocationCallback mLocationCallback;
     String mLastUpdateTime;
-    public static final String ACTION_LOCATION_BROADCAST = LocationUpdateService.class.getName() + "LocationBroadcast";
-    public static final String EXTRA_LOCATION = "EXTRA_LOCATION";
-    private DatabaseReference LocationReference;
-    private DatabaseReference UsersReference;
-    private User USER;
     private Intent broadcastintent;
-    private LatLng UpdatedLocation;
-    private LocationCallback locationCallback;
     public static final String KEY_LOCATION_CHANGED = "com.google.android.location.LOCATION";
 
     protected void createLocationRequest() {
@@ -93,7 +74,6 @@ public class LocationUpdateService extends Service implements LocationListener, 
     public IBinder onBind(Intent intent) {
         // TODO: Return the communication channel to the service.
         // for data persistence
-
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
