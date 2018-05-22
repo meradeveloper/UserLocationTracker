@@ -66,13 +66,14 @@ import java.util.Date;
         if (saveUser(USER)!=null);
         {
             addUser();
-            startService(new Intent(this, LocationUpdateService.class));
+            Log.e(TAG,"stopTracker"+startService(new Intent(this, LocationUpdateService.class)));
+            //startService(new Intent(this, LocationUpdateService.class));
         }
     }
 
     public void stopTracker()
     {
-        stopService(new Intent(this, LocationUpdateService.class));
+        Log.e(TAG,"stopTracker"+stopService(new Intent(this, LocationUpdateService.class)));
     }
 
     private User saveUser(User USER)
