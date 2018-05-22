@@ -1,10 +1,12 @@
 package com.userlocationtracker;
 
+import java.io.Serializable;
+
 /**
  * Created by Localadmin on 5/11/2018.
  */
 
-public class LocationModel {
+public class LocationModel implements Serializable {
 
     private String Lat;
     private String Long;
@@ -24,4 +26,6 @@ public class LocationModel {
     public void setLong(String aLong) {
         Long = aLong;
     }
+
+    public void getLatLong() {}
 }

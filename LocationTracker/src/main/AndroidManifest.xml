@@ -3,14 +3,19 @@
 
 <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+<uses-permission android:name="android.permission.INTERNET" />
 
 <application
 android:allowBackup="true"
+android:name=".AppConfig"
 android:label="@string/app_name"
 android:supportsRtl="true">
 <service
     android:name=".LocationUpdateService"
     android:enabled="true"
-    android:exported="true"></service>
+    android:exported="true">
+
+</service>
+    <receiver android:name=".LocationReceiver" />
 </application>
 </manifest>
