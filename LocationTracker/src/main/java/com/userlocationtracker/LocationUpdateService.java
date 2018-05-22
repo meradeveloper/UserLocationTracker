@@ -51,6 +51,12 @@ public class LocationUpdateService extends Service implements LocationListener, 
     }
 
     @Override
+    public void onDestroy() {
+        stopLocationUpdates();
+        super.onDestroy();
+    }
+
+    @Override
     public void onStart(Intent intent, int startId) {
         super.onStart(intent, startId);
 
@@ -62,7 +68,6 @@ public class LocationUpdateService extends Service implements LocationListener, 
                 .addOnConnectionFailedListener(this)
                 .build();
         mGoogleApiClient.connect();
-        Log.e(TAG, "onStartService: " + mGoogleApiClient.isConnected() + "mGoogleApiClient: " + mGoogleApiClient);
     }
 
     @Override
@@ -79,7 +84,6 @@ public class LocationUpdateService extends Service implements LocationListener, 
 
     @Override
     public void onLocationChanged(Location location) {
-        Log.d(TAG, "Firing onLocationChanged..............................................");
         mCurrentLocation = location;
         mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
         updateUI();
@@ -87,7 +91,6 @@ public class LocationUpdateService extends Service implements LocationListener, 
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        Log.e(TAG, "onConnected - isConnected ...............: " + mGoogleApiClient.isConnected());
         startLocationUpdates();
     }
 
@@ -103,13 +106,10 @@ public class LocationUpdateService extends Service implements LocationListener, 
 
 
     private void updateUI() {
-        Log.d(TAG, "UI update initiated .............");
         if (null != mCurrentLocation) {
             LocationModel locationModel= new LocationModel();
             locationModel.setLat(String.valueOf(mCurrentLocation.getLatitude()));
             locationModel.setLong(String.valueOf(mCurrentLocation.getLongitude()));
-            Log.d(TAG, "UI LATLONG ............."+locationModel.getLat()+" long: "+locationModel.getLong());
-
             startLocationUpdates();
             //Log.d(TAG,"BroadCast: "+LocalBroadcastManager.getInstance(this).sendBroadcast(broadcastintent.putExtra(EXTRA_LOCATION,locationModel)));
         } else {
@@ -134,12 +134,13 @@ public class LocationUpdateService extends Service implements LocationListener, 
         PendingResult<Status> pendingResult = LocationServices.FusedLocationApi.requestLocationUpdates(
                 mGoogleApiClient, mLocationRequest, locationIntent);
 
-        Log.e(TAG, "LocationModel update started ..............: ");
     }
     protected void stopLocationUpdates() {
+        broadcastintent = new Intent(this,LocationReceiver.class);
+        PendingIntent locationIntent = PendingIntent.getBroadcast(getApplicationContext(), 14872, broadcastintent, PendingIntent.FLAG_CANCEL_CURRENT);
         LocationServices.FusedLocationApi.removeLocationUpdates(
-                mGoogleApiClient, this);
-        Log.d(TAG, "LocationModel update stopped .......................");
+                mGoogleApiClient, locationIntent);
+        mGoogleApiClient.disconnect();
     }
 
 
