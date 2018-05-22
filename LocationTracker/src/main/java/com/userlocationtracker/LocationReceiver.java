@@ -38,6 +38,7 @@ public class LocationReceiver extends BroadcastReceiver {
     }
 
     private void addLocation(LocationModel locationModel){
+        if(LocationReference==null)
         LocationReference = FirebaseDatabase.getInstance().getReference("Location");
         LocationReference.child(String.valueOf(getUser().getUID())).setValue(locationModel);
     }

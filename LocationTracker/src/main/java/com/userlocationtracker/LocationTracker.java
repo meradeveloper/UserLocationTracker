@@ -49,9 +49,11 @@ import java.util.Date;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
-        UsersReference = FirebaseDatabase.getInstance().getReference("Users");
-
+        if(UsersReference == null)
+        {
+            FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+            UsersReference = FirebaseDatabase.getInstance().getReference("Users");
+        }
         if (isGooglePlayServicesAvailable())
             startTracker(initLocationTracker(new User()));
     }
