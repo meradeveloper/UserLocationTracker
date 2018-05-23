@@ -42,6 +42,8 @@ public class LocationUpdateService extends Service implements LocationListener, 
     String mLastUpdateTime;
     private Intent broadcastintent;
     public static final String KEY_LOCATION_CHANGED = "com.google.android.location.LOCATION";
+    public static final String STOP = "STOP";
+    PendingIntent locationIntent;
 
     protected void createLocationRequest() {
         mLocationRequest = new LocationRequest();
@@ -60,7 +62,6 @@ public class LocationUpdateService extends Service implements LocationListener, 
     public void onStart(Intent intent, int startId) {
         super.onStart(intent, startId);
 
-
         createLocationRequest();
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(LocationServices.API)
@@ -68,6 +69,8 @@ public class LocationUpdateService extends Service implements LocationListener, 
                 .addOnConnectionFailedListener(this)
                 .build();
         mGoogleApiClient.connect();
+        broadcastintent = new Intent(this,LocationReceiver.class);
+        locationIntent = PendingIntent.getBroadcast(getApplicationContext(), 14872, broadcastintent, PendingIntent.FLAG_CANCEL_CURRENT);
     }
 
     @Override
@@ -84,9 +87,15 @@ public class LocationUpdateService extends Service implements LocationListener, 
 
     @Override
     public void onLocationChanged(Location location) {
-        mCurrentLocation = location;
-        mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
-        updateUI();
+        if (null != location) {
+            LocationModel locationModel= new LocationModel();
+            locationModel.setLat(String.valueOf(location.getLatitude()));
+            locationModel.setLong(String.valueOf(location.getLongitude()));
+            startLocationUpdates();
+            //Log.d(TAG,"BroadCast: "+LocalBroadcastManager.getInstance(this).sendBroadcast(broadcastintent.putExtra(EXTRA_LOCATION,locationModel)));
+        } else {
+            Log.d(TAG, "location is null ...............");
+        }
     }
 
     @Override
@@ -103,19 +112,6 @@ public class LocationUpdateService extends Service implements LocationListener, 
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         Log.d(TAG, "Connection failed: " + connectionResult.toString());
     }
-
-
-    private void updateUI() {
-        if (null != mCurrentLocation) {
-            LocationModel locationModel= new LocationModel();
-            locationModel.setLat(String.valueOf(mCurrentLocation.getLatitude()));
-            locationModel.setLong(String.valueOf(mCurrentLocation.getLongitude()));
-            startLocationUpdates();
-            //Log.d(TAG,"BroadCast: "+LocalBroadcastManager.getInstance(this).sendBroadcast(broadcastintent.putExtra(EXTRA_LOCATION,locationModel)));
-        } else {
-            Log.d(TAG, "location is null ...............");
-        }
-    }
     protected void startLocationUpdates() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
@@ -127,19 +123,16 @@ public class LocationUpdateService extends Service implements LocationListener, 
             // for ActivityCompat#requestPermissions for more details.
             return;
         }
-        broadcastintent = new Intent(this,LocationReceiver.class);
-        PendingIntent locationIntent = PendingIntent.getBroadcast(getApplicationContext(), 14872, broadcastintent, PendingIntent.FLAG_CANCEL_CURRENT);
 
-
-        PendingResult<Status> pendingResult = LocationServices.FusedLocationApi.requestLocationUpdates(
+        LocationServices.FusedLocationApi.requestLocationUpdates(
                 mGoogleApiClient, mLocationRequest, locationIntent);
 
     }
     protected void stopLocationUpdates() {
-        broadcastintent = new Intent(this,LocationReceiver.class);
-        PendingIntent locationIntent = PendingIntent.getBroadcast(getApplicationContext(), 14872, broadcastintent, PendingIntent.FLAG_CANCEL_CURRENT);
+        broadcastintent.putExtra(STOP,STOP);
         LocationServices.FusedLocationApi.removeLocationUpdates(
                 mGoogleApiClient, locationIntent);
+        sendBroadcast(broadcastintent);
         mGoogleApiClient.disconnect();
     }
 

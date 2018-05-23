@@ -23,7 +23,6 @@ public class MainActivity extends LocationTracker {
     }
 
     public void stopService(View view) {
-
         stopTracker();
     }
 }

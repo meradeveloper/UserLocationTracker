@@ -7,8 +7,12 @@ import android.content.SharedPreferences;
 import android.location.Location;
 import android.util.Log;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -20,12 +24,14 @@ import static com.userlocationtracker.LocationTracker.USEROBJECT;
 
 public class LocationReceiver extends BroadcastReceiver {
     private DatabaseReference LocationReference;
-    private SharedPreferences mPrefs;
-    private Context context;
+
     @Override
     public void onReceive(Context context, Intent intent) {
         Location location = (Location) intent.getExtras().get(LocationUpdateService.KEY_LOCATION_CHANGED);
-        this.context=context;
+        if(LocationReference==null)
+            LocationReference = FirebaseDatabase.getInstance().getReference("Location");
+        if(intent.getStringExtra(LocationUpdateService.STOP)!=null && intent.getStringExtra(LocationUpdateService.STOP).equalsIgnoreCase(LocationUpdateService.STOP))
+            deleteLocation();
         if(location!=null)
         {
             LocationModel locationModel = new LocationModel();
@@ -34,12 +40,23 @@ public class LocationReceiver extends BroadcastReceiver {
             Log.e("LocationReceiver","location: "+location.getLatitude()+" long: "+location.getLongitude()+" code: "+getResultCode());
             addLocation(locationModel);
         }
+    }
 
+    private void deleteLocation() {
+        final Query locationQuery = LocationReference.child(getUser().getUID());
+        locationQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.getKey().equalsIgnoreCase(getUser().getUID()))
+                    dataSnapshot.getRef().removeValue();
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
     }
 
     private void addLocation(LocationModel locationModel){
-        if(LocationReference==null)
-        LocationReference = FirebaseDatabase.getInstance().getReference("Location");
         LocationReference.child(String.valueOf(getUser().getUID())).setValue(locationModel);
     }
 

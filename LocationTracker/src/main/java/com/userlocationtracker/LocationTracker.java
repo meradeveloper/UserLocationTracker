@@ -28,11 +28,17 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import java.text.DateFormat;
 import java.util.Date;
+import java.util.HashMap;
 
 /**
  * Created by Localadmin on 5/14/2018.
@@ -55,6 +61,23 @@ import java.util.Date;
 
         if (isGooglePlayServicesAvailable())
             startTracker(initLocationTracker(new User()));
+
+        initUser();
+    }
+
+    private void initUser() {
+        UsersReference.child(getUser().getUID()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                /*if(snapshot.getKey().equalsIgnoreCase(getUser().getUID()) && snapshot.getValue()==null)
+                    addUser();*/
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.e("MyEvent","onCancelled: "+databaseError.toString());
+            }
+        });
+        addUser();
     }
 
     private void addUser(){
@@ -62,19 +85,36 @@ import java.util.Date;
         UsersReference.child(String.valueOf(user.getUID())).setValue(user);
     }
 
+    private void deleteUser()
+    {
+        final Query userQuery = UsersReference.child(getUser().getUID());
+        userQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.getKey().equalsIgnoreCase(getUser().getUID()))
+                    dataSnapshot.getRef().removeValue();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.e(TAG, "onCancelled", databaseError.toException());
+            }
+        });
+    }
+
     private void startTracker(User USER)
     {
         if (saveUser(USER)!=null);
         {
             addUser();
-            Log.e(TAG,"stopTrackerok"+startService(new Intent(this, LocationUpdateService.class)));
-            //startService(new Intent(this, LocationUpdateService.class));
+            Log.e(TAG,"START TRACKER"+startService(new Intent(this, LocationUpdateService.class)));
         }
     }
 
     public void stopTracker()
     {
-        Log.e(TAG,"stopTracker"+stopService(new Intent(this, LocationUpdateService.class)));
+        deleteUser();
+        Log.e(TAG,"STOP TRACKER"+stopService(new Intent(this, LocationUpdateService.class)));
     }
 
     private User saveUser(User USER)
