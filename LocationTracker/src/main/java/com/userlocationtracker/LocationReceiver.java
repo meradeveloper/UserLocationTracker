@@ -43,6 +43,7 @@ public class LocationReceiver extends BroadcastReceiver {
     }
 
     private void deleteLocation() {
+        Log.e("LocationReceiver","deleteLocation: "+getUser().getUID());
         final Query locationQuery = LocationReference.child(getUser().getUID());
         locationQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

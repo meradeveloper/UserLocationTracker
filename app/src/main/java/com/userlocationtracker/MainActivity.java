@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
-public class MainActivity extends LocationTracker {
+public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -14,9 +14,9 @@ public class MainActivity extends LocationTracker {
         setContentView(R.layout.activity_main);
     }
 
-    @Override
+    /*@Override
     protected User initLocationTracker(User USER) {
-        USER.setUID("201");
+        USER.setUID("001");
         USER.setUserName("ABCD");
         USER.setLocation("DELHI");
         return USER;
@@ -24,5 +24,5 @@ public class MainActivity extends LocationTracker {
 
     public void stopService(View view) {
         stopTracker();
-    }
+    }*/
 }
