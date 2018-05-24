@@ -60,15 +60,7 @@ import java.util.HashMap;
             UsersReference = FirebaseDatabase.getInstance().getReference("Users");
 
         if (isGooglePlayServicesAvailable())
-        {
-            User USER= new User();
-            USER.setUID("001");
-            USER.setUserName("ABCD");
-            USER.setLocation("DELHI");
-            //startTracker(initLocationTracker(new User()));
-            startTracker(USER);
-        }
-
+            startTracker(initLocationTracker(new User()));
 
         initUser();
     }
