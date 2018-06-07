@@ -1,34 +1,14 @@
 package com.userlocationtracker;
 
-import android.Manifest;
-import android.app.Activity;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.location.Location;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.PendingResult;
-import com.google.android.gms.common.api.Status;
 
-import com.google.android.gms.location.LocationListener;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -36,9 +16,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
-import java.text.DateFormat;
-import java.util.Date;
-import java.util.HashMap;
 
 /**
  * Created by Localadmin on 5/14/2018.
@@ -119,7 +96,7 @@ import java.util.HashMap;
 
     private User saveUser(User USER)
     {
-        SharedPreferences.Editor prefsEditor = AppConfig.getPrefs().edit();
+        SharedPreferences.Editor prefsEditor = LocationTrackerApp.getPrefs().edit();
         Gson gson = new Gson();
         String json = gson.toJson(USER);
         prefsEditor.putString(USEROBJECT, json);
@@ -130,7 +107,7 @@ import java.util.HashMap;
     private User getUser()
     {
         Gson gson = new Gson();
-        String json = AppConfig.getPrefs().getString(USEROBJECT, "");
+        String json = LocationTrackerApp.getPrefs().getString(USEROBJECT, "");
         return gson.fromJson(json, User.class);
     }
 

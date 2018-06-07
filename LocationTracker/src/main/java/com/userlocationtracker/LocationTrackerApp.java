@@ -12,7 +12,7 @@ import com.google.firebase.database.FirebaseDatabase;
  * Created by Localadmin on 5/22/2018.
  */
 
-public class AppConfig extends Application {
+public class LocationTrackerApp extends Application {
 
     private static SharedPreferences mPrefs;
     private String LOCATIONPREFERENCE="LocationPreference";

@@ -3,7 +3,6 @@ package com.userlocationtracker;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.location.Location;
 import android.util.Log;
 
@@ -15,7 +14,6 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 
-import static android.content.Context.MODE_PRIVATE;
 import static com.userlocationtracker.LocationTracker.USEROBJECT;
 
 /**
@@ -64,7 +62,7 @@ public class LocationReceiver extends BroadcastReceiver {
     private User getUser()
     {
         Gson gson = new Gson();
-        String json = AppConfig.getPrefs().getString(USEROBJECT, "");
+        String json = LocationTrackerApp.getPrefs().getString(USEROBJECT, "");
         return gson.fromJson(json, User.class);
     }
 
